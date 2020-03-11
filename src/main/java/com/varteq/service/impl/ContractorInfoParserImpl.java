@@ -1,5 +1,7 @@
 package com.varteq.service.impl;
 
+import com.varteq.constants.ContractorInfoDom;
+import com.varteq.constants.UrlConstants;
 import com.varteq.domain.Contacts;
 import com.varteq.domain.Contractor;
 import com.varteq.service.ContractorInfoParser;
@@ -17,52 +19,49 @@ import java.util.Objects;
 @Slf4j
 public class ContractorInfoParserImpl implements ContractorInfoParser<Contractor> {
 
-  @Value("${contractor_url}")
+  @Value("${yelp_url}")
   private String url;
 
   @Override
-  public Contractor parseData(String link) {
+  public Contractor parseData(final String link) {
     Contractor contractor = new Contractor();
     try {
-      Document doc = Jsoup.connect(url + link).get();
+      Document doc = Jsoup.connect(String.format(UrlConstants.CONTRACTOR_URL, url, link)).get();
       contractor.setName(getContractorsName(doc));
       contractor.setRating(getContractorsRating(doc));
       contractor.setDescription(getContractorsDescription(doc));
       contractor.setContacts(getContractorsContacts(doc));
+      log.debug("The next contractor has been parsed: {}", contractor.toString());
     } catch (IOException e) {
       log.error("Connection provided by JSoup was interrupted ", e);
     }
     return contractor;
   }
 
-  private String getContractorsName(Document document) {
-    Element element = document.getElementsByClass("lemon--h1__373c0__2ZHSL heading--h1__373c0__1VUMO "
-        + "heading--no-spacing__373c0__1PzQP heading--inline__373c0__1F-Z6").first();
-
+  private String getContractorsName(final Document document) {
+    Element element = document.getElementsByClass(ContractorInfoDom.CONTRACTOR_NAME).first();
     return Objects.nonNull(element) ? element.text() : "";
   }
 
-  private Contacts getContractorsContacts(Document document) {
+  private Contacts getContractorsContacts(final Document document) {
     Contacts contacts = new Contacts();
     Element websiteParsed = document.getElementsByAttributeValue("rel", "noopener").first();
-    contacts.setWebsite(Objects.nonNull(websiteParsed) ? websiteParsed.text() : "website");
+    contacts.setWebsite(Objects.nonNull(websiteParsed) ? websiteParsed.text() : "");
     Element phoneNumberParsed = document.getElementsByAttributeValue("itemprop", "telephone").first();
-    contacts.setPhoneNumber(Objects.nonNull(phoneNumberParsed) ? phoneNumberParsed.text() : "phoneNumber");
+    contacts.setPhoneNumber(Objects.nonNull(phoneNumberParsed) ? phoneNumberParsed.text() : "");
     Element streetAddressParsed = document.getElementsByAttributeValue("itemprop", "streetAddress").first();
-    contacts.setStreetAddress(Objects.nonNull(streetAddressParsed) ? streetAddressParsed.text() : "address");
+    contacts.setStreetAddress(Objects.nonNull(streetAddressParsed) ? streetAddressParsed.text() : "");
     return contacts;
   }
 
-  private double getContractorsRating(Document document) {
-    String parsedRating = document.getElementsByClass("lemon--div__373c0__1mboc arrange__373c0__UHqhV "
-        + "gutter-6__373c0__zqA5A vertical-align-middle__373c0__2TQsQ u-space-b1 border-color--default__373c0__2oFDT")
+  private double getContractorsRating(final Document document) {
+    String parsedRating = document.getElementsByClass(ContractorInfoDom.CONTRACTOR_RATING)
         .select("div.lemon--div__373c0__1mboc")
         .attr("aria-label");
-
-    return Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf("star")-1));
+    return Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf("star") - 1));
   }
 
-  private String getContractorsDescription(Document document) {
+  private String getContractorsDescription(final Document document) {
     Element descriptionParsed = document.getElementsByAttributeValue("property", "og:description").first();
     return descriptionParsed.attr("content").substring(13);
   }

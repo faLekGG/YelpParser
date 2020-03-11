@@ -1,5 +1,8 @@
 package com.varteq.service.impl;
 
+import com.varteq.constants.CollectLinksDom;
+import com.varteq.constants.UrlConstants;
+import com.varteq.constants.UrlOptionsForSearch;
 import com.varteq.service.LinksParser;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -18,7 +21,7 @@ import java.util.Objects;
 @Slf4j
 public class CollectLinksParserImpl implements LinksParser<List<String>> {
 
-  @Value("${collect_links_url}")
+  @Value("${yelp_url}")
   private String url;
 
   @Override
@@ -30,9 +33,11 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
       //to get all seen results: int i = numberOfPages * 20
       //currently 50th page is a limit
       for (int i = 20; i >= 0; i -= 20) {
-        Document doc = Jsoup.connect(url + i).get();
-        Elements aElements = doc.getElementsByClass("lemon--a__373c0__IEZFH link__373c0__1G70M "
-            + "link-color--inherit__373c0__3dzpk link-size--inherit__373c0__1VFlE");
+        String composedUrlForParsing = String.format(UrlConstants.COLLECT_LINKS_URL,
+            url, UrlOptionsForSearch.CFLT, UrlOptionsForSearch.LOCATION, i);
+        Document doc = Jsoup.connect(composedUrlForParsing).get();
+        log.debug("Composed url is {}", composedUrlForParsing);
+        Elements aElements = doc.getElementsByClass(CollectLinksDom.LOOK_UP_LINKS_BY_CLASS);
         aElements.stream()
             .map(el -> el.attr("href"))
             .filter(link -> link.startsWith("/biz"))
@@ -44,11 +49,12 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
     return listOfLinks;
   }
 
-  private Integer getNumberOfPages(Document document) throws IOException {
-    Document doc = Jsoup.connect(url).get();
-    log.debug("url for parsing number of pages: {}", url);
-    Element element = doc.getElementsByClass("lemon--div__373c0__1mboc padding-b2__373c0__34gV1 "
-        + "border-color--default__373c0__3-ifU text-align--center__373c0__2n2yQ")
+  private Integer getNumberOfPages() throws IOException {
+    String composedUrlForParsingNop = String.format(UrlConstants.COLLECT_NUMBER_OF_PAGES_URL,
+        url, UrlOptionsForSearch.CFLT, UrlOptionsForSearch.LOCATION);
+    Document doc = Jsoup.connect(composedUrlForParsingNop).get();
+    log.debug("url for parsing number of pages: {}", composedUrlForParsingNop);
+    Element element = doc.getElementsByClass(CollectLinksDom.LOOK_UP_NUMBER_OF_PAGES)
         .tagName("span")
         .first();
     String parsedNumberOfPages = "";
