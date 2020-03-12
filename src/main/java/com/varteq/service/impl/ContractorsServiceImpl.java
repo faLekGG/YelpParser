@@ -2,6 +2,7 @@ package com.varteq.service.impl;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import com.varteq.constants.OtherConfigurationsOfApp;
 import com.varteq.domain.Contractor;
 import com.varteq.service.ContractorInfoParser;
 import com.varteq.service.ContractorsService;
@@ -38,7 +39,8 @@ public class ContractorsServiceImpl implements ContractorsService {
       yelp.createCollection(mongoCollection);
     }
 
-    List<String> listOfLinks = linksParser.parseData();
+    List<String> listOfLinks = linksParser.parseData(OtherConfigurationsOfApp.INITIAL_STEP,
+        OtherConfigurationsOfApp.LAST_STEP, OtherConfigurationsOfApp.STEP);
     for (String link : listOfLinks) {
       Contractor contractor = contractorInfoParser.parseData(link);
       mongoService.saveContractor(contractor);
