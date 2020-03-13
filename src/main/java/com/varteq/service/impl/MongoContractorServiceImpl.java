@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MongoServiceImpl implements MongoService<Contractor> {
+public class MongoContractorServiceImpl implements MongoService<Contractor> {
 
   private final ContractorsRepository contractorsRepository;
 

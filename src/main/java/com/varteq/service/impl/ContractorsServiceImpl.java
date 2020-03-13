@@ -32,18 +32,21 @@ public class ContractorsServiceImpl implements ContractorsService {
   private final MongoService<Contractor> mongoService;
 
   @Override
-  public void saveParsedInformation() {
-    MongoDatabase yelp = mongoClient.getDatabase(mongoDatabase);
-    if (!mongoService.collectionExists(mongoCollection, yelp)) {
-      log.debug("Create collection if not exists");
-      yelp.createCollection(mongoCollection);
-    }
-
+  public void processParsedInformation() {
+    createCollectionIfNotExist();
     List<String> listOfLinks = linksParser.parseData(OtherConfigurationsOfApp.INITIAL_STEP,
         OtherConfigurationsOfApp.LAST_STEP, OtherConfigurationsOfApp.STEP);
     for (String link : listOfLinks) {
       Contractor contractor = contractorInfoParser.parseData(link);
       mongoService.saveContractor(contractor);
+    }
+  }
+
+  private void createCollectionIfNotExist() {
+    MongoDatabase yelp = mongoClient.getDatabase(mongoDatabase);
+    if (!mongoService.collectionExists(mongoCollection, yelp)) {
+      log.debug("Create collection if not exists");
+      yelp.createCollection(mongoCollection);
     }
   }
 }

@@ -21,7 +21,7 @@ public class YelpParserApplication {
         Executors.newScheduledThreadPool(OtherConfigurationsOfApp.NUMBER_OF_THREADS);
     executorService.schedule(() -> {
       try {
-        contractorsService.saveParsedInformation();
+        contractorsService.processParsedInformation();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         log.error("Scheduler was interrupted ", e);

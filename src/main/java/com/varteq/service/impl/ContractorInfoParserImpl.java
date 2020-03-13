@@ -1,15 +1,14 @@
 package com.varteq.service.impl;
 
 import com.varteq.constants.ContractorInfoDom;
-import com.varteq.constants.UrlConstants;
 import com.varteq.domain.Contacts;
 import com.varteq.domain.Contractor;
 import com.varteq.service.ContractorInfoParser;
+import com.varteq.util.DocumentUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,16 +16,14 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ContractorInfoParserImpl implements ContractorInfoParser<Contractor> {
-
-  @Value("${yelp_url}")
-  private String url;
 
   @Override
   public Contractor parseData(final String link) {
     Contractor contractor = new Contractor();
     try {
-      Document doc = Jsoup.connect(String.format(UrlConstants.CONTRACTOR_URL, url, link)).get();
+      Document doc = DocumentUtils.getDocumentToParseContractorInfo(link);
       contractor.setName(getContractorsName(doc));
       contractor.setRating(getContractorsRating(doc));
       contractor.setDescription(getContractorsDescription(doc));
