@@ -19,13 +19,14 @@ public class YelpParserApplication {
     ContractorsService contractorsService = ctx.getBean(ContractorsServiceImpl.class);
     ScheduledExecutorService executorService =
         Executors.newScheduledThreadPool(OtherConfigurationsOfApp.NUMBER_OF_THREADS);
-    executorService.schedule(() -> {
+    executorService.scheduleAtFixedRate(() -> {
       try {
         contractorsService.processParsedInformation();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         log.error("Scheduler was interrupted ", e);
       }
-    }, 1, TimeUnit.DAYS);
+    }, OtherConfigurationsOfApp.INITIAL_DELAY,OtherConfigurationsOfApp.PERIOD_TO_RUN, TimeUnit.DAYS);
+
   }
 }

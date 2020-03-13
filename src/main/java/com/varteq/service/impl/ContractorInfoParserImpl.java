@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,11 +20,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ContractorInfoParserImpl implements ContractorInfoParser<Contractor> {
 
+  @Value("${yelp_url}")
+  private String url;
+
   @Override
   public Contractor parseData(final String link) {
     Contractor contractor = new Contractor();
     try {
-      Document doc = DocumentUtils.getDocumentToParseContractorInfo(link);
+      Document doc = DocumentUtils.getDocumentToParseContractorInfo(url, link);
       contractor.setName(getContractorsName(doc));
       contractor.setRating(getContractorsRating(doc));
       contractor.setDescription(getContractorsDescription(doc));
@@ -55,7 +59,8 @@ public class ContractorInfoParserImpl implements ContractorInfoParser<Contractor
     String parsedRating = document.getElementsByClass(ContractorInfoDom.CONTRACTOR_RATING)
         .select("div.lemon--div__373c0__1mboc")
         .attr("aria-label");
-    return Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf("star") - 1));
+    return parsedRating.isEmpty() ? 0 :
+        Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf("star") - 1));
   }
 
   private String getContractorsDescription(final Document document) {

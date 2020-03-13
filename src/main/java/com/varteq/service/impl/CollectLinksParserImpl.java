@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CollectLinksParserImpl implements LinksParser<List<String>> {
 
+  @Value("${yelp_url}")
+  private String url;
+
   @Override
   public List<String> parseData(int start, int last, int step) {
     List<String> listOfLinks = new ArrayList<>();
@@ -29,7 +33,7 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
       //to get all seen results: int i = numberOfPages * 20
       //currently 50th page is a limit
       for (int i = start; i >= last; i -= step) {
-        Document doc = DocumentUtils.getDocumentToCollectLinks(i);
+        Document doc = DocumentUtils.getDocumentToCollectLinks(url, i);
         Elements aElements = doc.getElementsByClass(CollectLinksDom.LOOK_UP_LINKS_BY_CLASS);
         aElements.stream()
             .map(el -> el.attr("href"))
@@ -43,7 +47,7 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
   }
 
   private Integer getNumberOfPages() throws IOException {
-    Document doc = DocumentUtils.getDocumentNumberOfPages();
+    Document doc = DocumentUtils.getDocumentNumberOfPages(url);
     Element element = doc.getElementsByClass(CollectLinksDom.LOOK_UP_NUMBER_OF_PAGES)
         .tagName("span")
         .first();
