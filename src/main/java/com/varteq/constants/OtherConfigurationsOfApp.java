@@ -18,7 +18,7 @@ public class OtherConfigurationsOfApp {
   public static final int PERIOD_TO_RUN = 1;
 
   //Configs for link parser
-  public static final int INITIAL_STEP = 20;
+  public static final int INITIAL_STEP = 980;
   public static final int LAST_STEP = 0;
   public static final int STEP = 20;
 }
