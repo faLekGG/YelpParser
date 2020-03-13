@@ -28,3 +28,13 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.varteq.YelpParserApplication"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

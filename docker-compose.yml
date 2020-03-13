@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        project_dir: /opt/yelp
+        project_name: yelp-parser
+    container_name: 'yelp-server'
+    environment:
+      WAIT_HOSTS: mongo-database:27017
+      YELP_URL: https://www.yelp.com
+      MONGO_DATABASE: yelp
+      MONGO_COLLECTION: yelpcollection
+      MONGO_HOST: mongo-database
+      MONGO_USER: vhalaveika
+      MONGO_PASSWORD: 123
+      MONGO_PORT: 27017
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: 'mongo-database'
+    environment:
+      MONGO_INITDB_DATABASE: yelp
+      MONGO_INITDB_ROOT_USERNAME: vhalaveika
+      MONGO_INITDB_ROOT_PASSWORD: 123
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - '27020:27017'

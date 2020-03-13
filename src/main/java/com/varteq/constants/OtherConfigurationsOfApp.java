@@ -12,9 +12,12 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class OtherConfigurationsOfApp {
+  //Configs for scheduler
   public static final int NUMBER_OF_THREADS = 1;
   public static final int INITIAL_DELAY = 0;
   public static final int PERIOD_TO_RUN = 1;
+
+  //Configs for link parser
   public static final int INITIAL_STEP = 20;
   public static final int LAST_STEP = 0;
   public static final int STEP = 20;
