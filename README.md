@@ -34,7 +34,7 @@ Eventually you see all parsed results in JSON
 <li> docker-compose down - to  stop and remove containers, networks, images, and volumes </li>
 <ol>     
 *If you don't want to parse everything simply change property of INITIAL_STEP or LAST_STEP OtherConfigurationsOfApp
-**Attention**: those properties must be multiple to 20 (0, 20, 40, 60 up to 980) because of url building for yelp 
+Attention: those properties must be multiple to 20 (0, 20, 40, 60 up to 980) because of url building for yelp 
   
                                                
                                                
