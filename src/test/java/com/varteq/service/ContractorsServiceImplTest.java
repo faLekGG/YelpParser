@@ -1,9 +1,8 @@
 package com.varteq.service;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.internal.MongoDatabaseImpl;
-import com.varteq.config.AppConfig;
+import com.varteq.BaseTestConfig;
 import com.varteq.documents.DocumentFactory;
 import com.varteq.domain.Contractor;
 import com.varteq.service.impl.CollectLinksParserImpl;
@@ -16,18 +15,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
-public class ContractorsServiceImplTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+public class ContractorsServiceImplTest extends BaseTestConfig {
 
   private ContractorInfoParser<Contractor> contractorInfoParser;
   private LinksParser<List<String>> linksParser;
@@ -52,11 +48,11 @@ public class ContractorsServiceImplTest {
         .thenReturn(true);
 
     Mockito
-        .when(linksParser.parseData(0, 0, 0))
-        .thenReturn(Collections.singletonList("mock String"));
+        .when(linksParser.parseData(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
+        .thenReturn(Collections.singletonList("mocked data"));
 
     Mockito
-        .when(contractorInfoParser.parseData("mock String"))
+        .when(contractorInfoParser.parseData(ArgumentMatchers.anyString()))
         .thenReturn(DocumentFactory.buildContractor());
 
     contractorsService.processParsedInformation();

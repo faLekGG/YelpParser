@@ -1,28 +1,20 @@
 package com.varteq.service;
 
-import com.varteq.config.AppConfig;
+import com.varteq.BaseTestConfig;
 import com.varteq.service.impl.CollectLinksParserImpl;
-import com.varteq.util.DocumentUtils;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@RunWith(MockitoJUnitRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
-public class CollectLinksParserImplTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+public class CollectLinksParserImplTest extends BaseTestConfig {
 
   private LinksParser<List<String>> linksParser;
 

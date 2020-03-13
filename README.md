@@ -20,13 +20,13 @@ In the end multithreading lose it appeal considering everything I've said above.
 To execute everything simply run a command: docker-compose up  
 To check results in docker:
 1. docker exec -it mongo-database bash
-2. mongo -u vhalaveika -p 123 (Or any other user you are going to set up in env variables)
+2. Start an another terminal and execute: mongo -u vhalaveika -p 123 (Or any other user you are going to set up in env variables)
 3. After you connected to mongo shell
 3.1 use yelp
 3.2 switched to db yelp
 3.3 db.yelpcollection.find()
 Eventually you see all parsed results in JSON
-
+4. docker-compose down - to  stop and remove containers, networks, images, and volumes
 *If you don't want to parse everything simply change property of INITIAL_STEP or LAST_STEP OtherConfigurationsOfApp
 Attention: those properties must be multiple to 20 (0, 20, 40, 60 up to 980) because of url building for yelp
                                             

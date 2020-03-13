@@ -1,6 +1,6 @@
 package com.varteq.service;
 
-import com.varteq.config.AppConfig;
+import com.varteq.BaseTestConfig;
 import com.varteq.dao.ContractorsRepository;
 import com.varteq.documents.DocumentFactory;
 import com.varteq.domain.Contractor;
@@ -10,12 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
-public class MongoContractorServiceImplTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+public class MongoContractorServiceImplTest extends BaseTestConfig {
 
   private ContractorsRepository contractorsRepository;
   private MongoService<Contractor> mongoService;
