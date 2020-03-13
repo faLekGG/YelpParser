@@ -30,14 +30,14 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
     try {
       //For some reason yelp doesn't allow to see results further than 50 page
       //In the case it begins work we need to use this formula
-      //to get all seen results: int i = numberOfPages * 20
+      //to get all seen results: int i = getNumberOfPages * 20
       //currently 50th page is a limit
       for (int i = start; i >= last; i -= step) {
         Document doc = DocumentUtils.getDocumentToCollectLinks(url, i);
         Elements aElements = doc.getElementsByClass(CollectLinksDom.LOOK_UP_LINKS_BY_CLASS);
         aElements.stream()
-            .map(el -> el.attr("href"))
-            .filter(link -> link.startsWith("/biz"))
+            .map(el -> el.attr(CollectLinksDom.HREF_ATTR_OF_LINK))
+            .filter(link -> link.startsWith(CollectLinksDom.FILTER_ATTR_LINK_BY))
             .forEach(listOfLinks::add);
       }
     } catch (IOException e) {
@@ -49,7 +49,7 @@ public class CollectLinksParserImpl implements LinksParser<List<String>> {
   private Integer getNumberOfPages() throws IOException {
     Document doc = DocumentUtils.getDocumentNumberOfPages(url);
     Element element = doc.getElementsByClass(CollectLinksDom.LOOK_UP_NUMBER_OF_PAGES)
-        .tagName("span")
+        .tagName(CollectLinksDom.TAG_NOP)
         .first();
     String parsedNumberOfPages = "";
     if (Objects.nonNull(element)) {

@@ -46,25 +46,33 @@ public class ContractorInfoParserImpl implements ContractorInfoParser<Contractor
 
   private Contacts getContractorsContacts(final Document document) {
     Contacts contacts = new Contacts();
-    Element websiteParsed = document.getElementsByAttributeValue("rel", "noopener").first();
+    Element websiteParsed = document
+        .getElementsByAttributeValue(ContractorInfoDom.WEBSITE_ATTR_KEY, ContractorInfoDom.WEBSITE_ATTR_VALUE)
+        .first();
     contacts.setWebsite(Objects.nonNull(websiteParsed) ? websiteParsed.text() : "");
-    Element phoneNumberParsed = document.getElementsByAttributeValue("itemprop", "telephone").first();
+    Element phoneNumberParsed = document
+        .getElementsByAttributeValue(ContractorInfoDom.PHONE_ADDRESS_ATTR_KEY, ContractorInfoDom.PHONE_ATTR_VALUE)
+        .first();
     contacts.setPhoneNumber(Objects.nonNull(phoneNumberParsed) ? phoneNumberParsed.text() : "");
-    Element streetAddressParsed = document.getElementsByAttributeValue("itemprop", "streetAddress").first();
+    Element streetAddressParsed = document
+        .getElementsByAttributeValue(ContractorInfoDom.PHONE_ADDRESS_ATTR_KEY, ContractorInfoDom.ADDRESS_ATTR_VALUE)
+        .first();
     contacts.setStreetAddress(Objects.nonNull(streetAddressParsed) ? streetAddressParsed.text() : "");
     return contacts;
   }
 
   private double getContractorsRating(final Document document) {
     String parsedRating = document.getElementsByClass(ContractorInfoDom.CONTRACTOR_RATING)
-        .select("div.lemon--div__373c0__1mboc")
-        .attr("aria-label");
+        .select(ContractorInfoDom.CONTRACTOR_RATING_SELECTOR)
+        .attr(ContractorInfoDom.CONTRACTOR_RATING_ATTR_KEY);
     return parsedRating.isEmpty() ? 0 :
-        Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf("star") - 1));
+        Double.parseDouble(parsedRating.trim().substring(0, parsedRating.indexOf(ContractorInfoDom.RATING_INDEX) - 1));
   }
 
   private String getContractorsDescription(final Document document) {
-    Element descriptionParsed = document.getElementsByAttributeValue("property", "og:description").first();
-    return descriptionParsed.attr("content").substring(13);
+    Element descriptionParsed = document
+        .getElementsByAttributeValue(ContractorInfoDom.DESC_KEY, ContractorInfoDom.DESC_VALUE)
+        .first();
+    return descriptionParsed.attr(ContractorInfoDom.DESC_PARSED_KEY).substring(13);
   }
 }
